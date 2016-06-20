@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style id="slide-basic-style" type="text/css">
+		#pbody{
+			margin: 0px;
+			padding: 0px;
+		}
+
+		#slide{
+			width: 100%;
+			height: 100%;
+		}
+
+		.slide-notes{
+			display: none;
+		}
+	</style>
+
+
+	<style id="cc-style" type="text/css">
+		#slides,#themes{
+			display: none;
+		}
+
+		.ticking{
+			color: red;
+		}
+		.stopped{
+			color: black;
+		}
+
+		.label{
+			font-weight: bold;
+			font-size: small;
+			font-style: italic;
+		}
+
+		#presentation-help{
+			padding: 100px 2px;
+		}
+		#presenter-notes{
+			font-weight: bold;
+			font-size: x-large;
+		}
+
+		#help{
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			font-size: x-small;
+			font-style: italic;
+		}
+		#help table{
+			border-collapse: collapse;
+		}
+
+		#help .th>td{
+			font-weight: bold;
+			text-align: center;
+		}
+		#help td{
+			border: solid 1px black;
+			padding: 2px;
+			
+		}
+
+		#help .shortcut{
+			font-weight: bold;
+			
+		}
+
+		#monitors{
+			position: absolute;
+			right: 0;
+			top: 0;
+			font-size: small;
+		}
+
+		#monitors table{
+			border-collapse: collapse;
+		}
+
+		#monitors td{
+			border: solid 1px black;
+			padding: 2px;
+		}
+
+		#monitors .monitor-value{
+			font-weight: bold;
+		}
+	</style>
+	
+	<title>present</title>
+</head>
+
+
+
+
+
+<body>
+<!-- vvv YOUR EDITS GO INTO THE SECTION BELOW vvv -->
+	<script id="configuration" type="text/javascript">
+		var conf = {
+			slides_default_theme: "another-theme",
+			slides_add_footer: true,
+			slide_title_class: "slide-title",//-
+			slide_content_class: "slide-content",//-
+			slide_footer_class: "slide-footer",
+		}
+	</script>
+
+	<div id="slides">
+		<div class="slide">
+			<div class="slide-title">
+				Un
+			</div>
+			<div class="slide-content">
+				First slide!!!!
+			</div>
+		</div>
+		<div class="slide">
+			<div class="slide-title">
+				Deux
+			</div>
+			<div class="slide-content">
+				Second slide!!!!
+			</div>
+			<div class="slide-notes">
+				say blaaaaaah
+			</div>
+		</div>
+		<div class="slide">
+			<div class="slide-title">
+				Troi
+			</div>
+			<div class="slide-content">
+				Third slide!!!!
+			</div>
+		</div>
+	</div>
+
+	<div id="themes">
+		<style class="theme" id="another-theme" type="text/css">
+			#slide{
+				background-color: black;
+				color: white;
+				padding: 10px;
+				text-align: center;
+			}
+			.slide-title{
+				height: 10%;
+				vertical-align: middle;
+				font-size: x-large;
+				font-weight: bolder;
+				margin-bottom: 10px; 
+			}
+			.slide-content{
+				height: 80%;
+				vertical-align: middle;
+				font-weight: bolder;
+				font-size: xx-large;
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			.slide-footer{
+				height: 10%;
+				font-size: smaller;
+			}
+		</style>
+		<style class="theme" id="default-theme" type="text/css">
+			#slide{
+				padding: 10px;
+				text-align: center;
+			}
+			.slide-title{
+				height: 10%;
+				vertical-align: middle;
+				font-size: x-large;
+				font-weight: bolder;
+				margin-bottom: 10px; 
+			}
+			.slide-content{
+				height: 80%;
+				vertical-align: middle;
+				font-weight: bolder;
+				font-size: xx-large;
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			.slide-footer{
+				height: 10%;
+				font-size: smaller;
+			}
+		</style>
+	</div>
+<!-- ^^^ YOUR EDITS GO INTO THE SECTION ABOVE ^^^ -->
+
+
+
+
+<!-- vvv SECTION BELOW AFFECTS THE PAGE APPEARANCE DON'T EDIT vvv -->
+	<div id="controls">
+		<div id="presentation-control">
+			<button id="con-prev-slide" onclick="cc.prev_slide()"> &#8678 </button>
+			<button id="con-toggle-present"onclick="cc.toggle_presentation()"> &#9655 </button>
+			<button id="con-next-slide"onclick="cc.next_slide()"> &#8680 </button>
+			<!-- <button id="con-prev-slide"onclick="cc.hide_presentation()">hide presentation window</button>
+			<button id="con-prev-slide"onclick="cc.show_presentation()">show presentation window</button> -->
+			<select id="themepicker" onchange="cc.change_theme()"></select>
+		</div>
+	</div>
+
+	<div id="monitors">
+		<table>
+			<tr id="total-time">
+				<td class="monitor-name label">total presentation time</td>
+				<td class="monitor-value time"><span class="time-hours"></span>:<span class="time-minutes"></span></td>
+			</tr>
+			<tr id="current-slide-time">
+				<td class="monitor-name label">current slide time</td>
+				<td class="monitor-value time"><span class="time-hours"></span>:<span class="time-minutes"></span></td>
+			</tr>
+			<tr id="current-slide-index">
+				<td class="monitor-name label">current slide index</td>
+				<td class="monitor-value counter"></td>
+			</tr>
+			<tr id="slides-to-go">
+				<td class="monitor-name label">remaining slides</td>
+				<td class="monitor-value counter"></td>
+			</tr>
+			<tr id="total-slides">
+				<td class="monitor-name label">total number of slides</td>
+				<td class="monitor-value counter"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="presentation-help">
+		<div class="label">Presenter Notes</div>
+		<div id="presenter-notes"></div>
+	</div>
+
+	<div id="help">
+		<table>
+			<tr class="th"><td>shortcut</td><td>function</td></tr>
+			<tr><td class="label">left arrow or p</td><td>previous slide</td></tr>
+			<tr><td class="label">right arrow or n</td><td>next slide</td></tr>
+			<tr><td class="label">s</td><td>start/stop presentation</td></tr>
+		</table>
+	</div>
+<!-- ^^^ SECTION ABOVE AFFECTS THE PAGE APPEARANCE DON'T EDIT ^^^ -->
+</body>
+
+
+<script id="global-variables" type="text/javascript">
+	var cc = null;
+</script>
+
+
+
+<script id="presentation-class" type="text/javascript">
+	function Presentation(){
+		this._curslide = 0;
+		this._s = document.getElementsByClassName('slide');
+		if (conf["slides_add_footer"]){
+			for (var i=0; i<this._s.length; i++){
+				var f = document.createElement("div");
+				f.className = conf["slide_footer_class"];
+				// add footer [ i/n ]
+				f.innerHTML = "[ "+(i+1)+"/"+this._s.length+" ]";
+				this._s[i].appendChild(f);
+			}
+		}
+	}
+	Presentation.prototype.nslides = function(){
+		return this._s.length;
+	}
+	Presentation.prototype.slideindex = function(){
+		return this._curslide+1;
+	}
+	Presentation.prototype.next_slide = function(){
+		this._curslide++;
+
+		if (this._curslide==this._s.length){
+			this._curslide--;
+		}
+	}
+
+	Presentation.prototype.prev_slide = function(){
+		this._curslide--;
+
+		if (this._curslide==-1){
+			this._curslide++;
+		}
+	}
+
+	Presentation.prototype.cur_slide = function(){
+		return this._s[this._curslide].innerHTML;
+	}
+
+	Presentation.prototype.cur_slide_notes = function(){
+		var r = this._s[this._curslide].getElementsByClassName("slide-notes");
+		return r.length? r[0].innerHTML : '';
+	}
+</script>
+
+<script id="timer" type="text/javascript">
+	function Timer(hours_element, minutes_element, seconds_element=null, start_fn=null, stop_fn=null){
+		this._h = 0;
+		this._m = 0;
+		this._s = 0;
+
+		this._startfn = start_fn;
+		this._stopfn = stop_fn;
+
+		this._t = null;
+		this._he = hours_element;
+		this._me = minutes_element;
+		this._se = seconds_element;
+		if (seconds_element){
+			//set resolution to 1 second
+			this._res = 1000;
+		}
+		else{
+			//set resolution to 1 minute
+			this._res = 1000;
+		}
+
+		if (this._stopfn) //timer is stopped
+			this._stopfn();
+
+		this.update_view();
+	}
+
+	Timer.prototype.update_view = function(){
+		if (this._h < 10)
+			var pre = "0";
+		else
+			var pre = "";
+		this._he.innerHTML = pre+this._h;
+
+		if (this._m < 10)
+			pre = "0";
+		else
+			pre = "";
+
+		this._me.innerHTML = pre+this._m;
+
+		if (this._se){
+			if (this._s < 10)
+				pre = "0";
+			else
+				pre = "";
+
+			this._se.innerHTML = pre+this._s;
+		}
+
+	}
+
+	Timer.prototype.update = function(){
+		if (this._se){
+			if (this._s == 59){
+				this._m++;
+				this._s = 0;
+				if (this._m==60){
+					this._m=0;
+					this._h++;
+				}
+			}
+			else
+				this._s++;
+		}
+		else{
+			if (this._m == 59){
+				this._h++;
+				this._m = 0;
+			}
+			else
+				this._m++;
+		}
+
+		this.update_view();
+
+	}
+
+	Timer.prototype.start = function(start_fn=null){
+		if (!this._t)
+			var moi = this;
+			this._t = window.setInterval(function(){moi.update();}, this._res);
+			
+			if (start_fn)
+				start_fn();
+
+			else if (this._startfn)
+				this._startfn();
+
+			this.update_view();
+	}
+
+	Timer.prototype.stop = function(stop_fn){
+		if (this._t){
+			window.clearInterval(this._t);
+			this._t = null;
+			if (stop_fn)
+				stop_fn();
+			else if (this._stopfn)
+				this._stopfn();
+			this.update_view();
+		}
+	}
+
+	Timer.prototype.hours = function(){
+		return this._h;
+	}
+	Timer.prototype.minutes = function(){
+		return this._h;
+	}
+	Timer.prototype.seconds = function(){
+		return this._s;
+	}
+
+	Timer.prototype.reset = function(){
+		this._h = 0;
+		this._m = 0;
+		this._s = 0;
+
+		this.update_view();
+	}
+</script>
+
+<script id="command-center" type="text/javascript">
+	function CommandCenter(){
+		//monitors
+		
+		this._ttime = this._create_timer("total-time"); // presentation total time
+		this._stime = this._create_timer("current-slide-time"); // current slide time
+		this._cslide = ""; // current slide number
+		this._tslides = ""; //total slides
+		this._rslides = ""; //remaining slides
+
+		document.getElementById("con-next-slide").disabled = true;
+		document.getElementById("con-prev-slide").disabled = true;
+	}
+
+	CommandCenter.prototype._load_pstyle = function(style_id, into=null){
+		
+		if (!into){
+			var into = document.createElement("style");
+			this._w.document.getElementsByTagName("head")[0].appendChild(into);
+		}
+
+		into.innerHTML = document.getElementById(style_id).innerHTML;
+	}
+
+
+	CommandCenter.prototype._start_window = function(){
+		this._w = window.open("", "", "menubar=no");
+		var moi = this;
+		this._w.addEventListener("beforeunload", function(){moi.toggle_presentation();});
+		this._load_pstyle("slide-basic-style");
+		this._ss = document.createElement("style");
+		this._w.document.getElementsByTagName("head")[0].appendChild(this._ss);
+		this.change_theme();
+
+		this._s = document.createElement("div");
+		this._s.id = "slide";
+	
+
+		var b = this._w.document.getElementsByTagName("body")[0];
+		b.id = "pbody";
+		b.appendChild(this._s);
+	
+	}
+
+
+	CommandCenter.prototype._display_presentation = function(){
+		this._s.innerHTML = this._p.cur_slide();
+		this._stime.reset();
+		this._display_notes();
+
+		document.getElementById("current-slide-index").getElementsByClassName("counter")[0].innerHTML = this._p.slideindex();
+		
+	}
+
+	CommandCenter.prototype._display_notes = function(){
+		document.getElementById("presenter-notes").innerHTML = this._p.cur_slide_notes();
+		document.getElementById("slides-to-go").getElementsByClassName("counter")[0].innerHTML = this._p.nslides()-this._p.slideindex();
+	}
+
+
+	CommandCenter.prototype.toggle_presentation = function(){
+		if (this._p){
+			//stop
+			this._stop_presentation();
+			// change button
+			document.getElementById("con-toggle-present").innerHTML = "&#9655";
+			document.getElementById("con-next-slide").disabled = true;
+			document.getElementById("con-prev-slide").disabled = true;
+			this._ttime.stop();
+			this._stime.stop();
+			
+		}
+		else{
+			this._start_presentation();
+			document.getElementById("con-toggle-present").innerHTML = "&#9635";
+			document.getElementById("con-next-slide").disabled = false;
+			document.getElementById("con-prev-slide").disabled = false;
+			this._ttime.start();
+			this._stime.start();
+		}
+		
+	}
+
+	CommandCenter.prototype._create_timer = function(timer_id, seconds=false, start_fn=null, stop_fn=null){
+		if (!start_fn)
+			start_fn = function(){
+				var e=document.getElementById(timer_id).getElementsByClassName("time")[0]; 
+				
+				if (e.className.match(/(?:^|\s)stopped(?!\S)/)) 
+					e.className = e.className.replace(/(?:^|\s)stopped(?!\S)/g, " ticking");
+				else if (!e.className.match(/(?:^|\s)ticking(?!\S)/)) 
+					e.className += " ticking";
+			}
+		if (!stop_fn)
+			stop_fn = function(){
+				var e=document.getElementById(timer_id).getElementsByClassName("time")[0]; 
+				if (e.className.match(/(?:^|\s)ticking(?!\S)/)) 
+					e.className = e.className.replace(/(?:^|\s)ticking(?!\S)/g, " stopped");
+				else if (!e.className.match(/(?:^|\s)stopped(?!\S)/)) 
+					e.className += " stopped";
+			}
+
+		var te = document.getElementById(timer_id);
+		var h = te.getElementsByClassName("time-hours")[0];
+		var m = te.getElementsByClassName("time-minutes")[0];
+		var s = seconds? te.getElementsByClassName("time-seconds")[0] : null;
+		var t = new Timer(h, m, s, start_fn, stop_fn);
+		return t;
+	}
+
+
+	CommandCenter.prototype._start_presentation = function(){
+		this._p = new Presentation();
+		this._start_window();
+		this._display_presentation();
+
+		document.getElementById("total-slides").getElementsByClassName("counter")[0].innerHTML = this._p.nslides();
+		document.getElementById("slides-to-go").getElementsByClassName("counter")[0].innerHTML = this._p.nslides()-this._p.slideindex();
+		
+	}
+
+	CommandCenter.prototype.next_slide = function(){
+		this._p.next_slide()
+		this._p.cur_slide_notes();
+		this._display_presentation();
+
+		
+	}
+
+	CommandCenter.prototype.prev_slide = function(){
+		this._p.prev_slide();
+		this._p.cur_slide_notes();
+		this._display_presentation();
+	}
+
+	CommandCenter.prototype.change_theme = function(){
+		var ns = document.getElementById("themepicker").value;
+		this._load_pstyle(ns, this._ss);
+	}
+
+
+
+	CommandCenter.prototype._stop_presentation = function(){
+		this._w.close();
+		this._w = null;
+		this._p = null;
+		this._s = null;
+		this._ss = null;
+
+		document.getElementById("total-slides").getElementsByClassName("counter")[0].innerHTML = "";
+		document.getElementById("current-slide-index").getElementsByClassName("counter")[0].innerHTML = "";
+		document.getElementById("slides-to-go").getElementsByClassName("counter")[0].innerHTML = "";
+
+	}
+</script>
+
+<script id="general-functions" type="text/javascript">
+	function populate_themepicker(){
+		var all_themes = document.getElementsByClassName("theme");
+		var tp = document.getElementById("themepicker");
+
+		for (var i=0; i<all_themes.length; i++){
+			var o = document.createElement("option");
+			o.value = all_themes[i].id;
+			o.innerHTML = all_themes[i].id;
+			if (o.value == conf["slides_default_theme"])
+				o.selected = true;
+			tp.appendChild(o);
+		}
+	}
+
+	function startup(){
+		populate_themepicker();
+		cc = new CommandCenter();
+
+		//register shortcuts
+		document.addEventListener("keyup", shortcut, false);
+	}
+
+	function shortcut(e){
+		// next slide if right arrow or 'n'
+		if (e.keyCode == 39 || e.keyCode == 78){
+			cc.next_slide();
+			document.getElementById("con-next-slide").focus();
+		}
+
+		// prev slide if left arrow or 'p'
+		if (e.keyCode == 37 || e.keyCode == 80){
+			cc.prev_slide();
+			document.getElementById("con-prev-slide").focus();
+		}
+
+		// start/stop presentation if s
+		if (e.keyCode == 83){
+			cc.toggle_presentation();
+			document.getElementById("con-toggle-present").focus();
+		}
+
+	}
+
+	// CALLING STARTUP FUNCTION //
+	startup();
+	// //
+</script>
+</html>
