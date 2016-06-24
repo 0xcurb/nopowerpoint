@@ -33,7 +33,6 @@
 		.label{
 			font-weight: bold;
 			font-size: small;
-			font-style: italic;
 		}
 
 		#presentation-help{
@@ -65,8 +64,10 @@
 			
 		}
 
-		#help .shortcut{
+		#help .label{
 			font-weight: bold;
+			text-align: center;
+			background-color: #C9C9C9;
 			
 		}
 
@@ -89,6 +90,10 @@
 		#monitors .monitor-value{
 			font-weight: bold;
 		}
+
+		#monitors .label{
+			background-color: #C9C9C9;
+		}
 	</style>
 	
 	<title>no power point</title>
@@ -110,6 +115,8 @@
 		}
 	</script>
 
+
+
 	<div id="slides">
 		<div class="slide">
 			<div class="slide-title">
@@ -125,9 +132,6 @@
 			</div>
 			<div class="slide-content">
 				Second slide!!!!
-			</div>
-			<div class="slide-notes">
-				say blaaaaaah
 			</div>
 		</div>
 		<div class="slide">
@@ -202,12 +206,16 @@
 <!-- vvv SECTION BELOW AFFECTS THE PAGE APPEARANCE DON'T EDIT vvv -->
 	<div id="controls">
 		<div id="presentation-control">
-			<button id="con-prev-slide" onclick="cc.prev_slide()"> &#8678 </button>
-			<button id="con-toggle-present"onclick="cc.toggle_presentation()"> &#9655 </button>
-			<button id="con-next-slide"onclick="cc.next_slide()"> &#8680 </button>
-			<!-- <button id="con-prev-slide"onclick="cc.hide_presentation()">hide presentation window</button>
-			<button id="con-prev-slide"onclick="cc.show_presentation()">show presentation window</button> -->
-			<select id="themepicker" onchange="cc.change_theme()"></select>
+			<div id="slides-navigation">
+				<button id="con-prev-slide" title="previous slide" onclick="cc.prev_slide()"> &#8678 </button>
+				<button id="con-toggle-present" title="start/stop presentation" onclick="cc.toggle_presentation()"> &#9655 </button>
+				<button id="con-next-slide" title="next slide" onclick="cc.next_slide()"> &#8680 </button>
+				<button id="con-toggle-timers" title="pause/resume timers" onclick="cc.toggle_timers()"> &#10074&#10074 </button>
+			</div>
+			<div id="slides-theme">
+				<span class="label">Slides Theme</span>
+				<select id="themepicker" onchange="cc.change_theme()"></select>
+			</div>
 		</div>
 	</div>
 
@@ -427,6 +435,10 @@
 
 		this.update_view();
 	}
+
+	Timer.prototype.isticking = function(){
+		return (this._t != null);
+	}
 </script>
 
 <script id="command-center" type="text/javascript">
@@ -441,6 +453,7 @@
 
 		document.getElementById("con-next-slide").disabled = true;
 		document.getElementById("con-prev-slide").disabled = true;
+		document.getElementById("con-toggle-timers").disabled = true;
 	}
 
 	CommandCenter.prototype._load_pstyle = function(style_id, into=null){
@@ -488,6 +501,17 @@
 		document.getElementById("slides-to-go").getElementsByClassName("counter")[0].innerHTML = this._p.nslides()-this._p.slideindex();
 	}
 
+	CommandCenter.prototype.toggle_timers = function(){
+		if (this._ttime.isticking()){
+			this._ttime.stop();
+			this._stime.stop();
+		}
+		else{
+			this._ttime.start();
+			this._stime.start();
+		}
+
+	}
 
 	CommandCenter.prototype.toggle_presentation = function(){
 		if (this._p){
@@ -497,6 +521,7 @@
 			document.getElementById("con-toggle-present").innerHTML = "&#9655";
 			document.getElementById("con-next-slide").disabled = true;
 			document.getElementById("con-prev-slide").disabled = true;
+			document.getElementById("con-toggle-timers").disabled = true;
 			this._ttime.stop();
 			this._stime.stop();
 			
@@ -506,6 +531,7 @@
 			document.getElementById("con-toggle-present").innerHTML = "&#9635";
 			document.getElementById("con-next-slide").disabled = false;
 			document.getElementById("con-prev-slide").disabled = false;
+			document.getElementById("con-toggle-timers").disabled = false;
 			this._ttime.start();
 			this._stime.start();
 		}
