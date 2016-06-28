@@ -1,5 +1,136 @@
 <!DOCTYPE html>
 <html>
+
+<!-- vvv YOUR EDITS GO INTO THE SECTION BELOW vvv -->
+<div id="slides">
+	<div class="slide">
+		<div class="slide-title">
+			Un
+		</div>
+		<div class="slide-content">
+			First slide!!!!
+		</div>
+	</div>
+	<div class="slide">
+		<div class="slide-title">
+			Deux
+		</div>
+		<div class="slide-content">
+			Second slide!!!!
+		</div>
+		<div class="slide-notes">
+			Say something entertaining
+		</div>
+	</div>
+	<div class="slide">
+		<div class="slide-title">
+			Troi
+		</div>
+		<div class="slide-content">
+			Third slide!!!!
+		</div>
+	</div>
+	<div class="slide">
+		<div class="slide-title">
+			Movies
+		</div>
+		<div class="slide-content">
+			<ul>
+				<li>The Godfather</li>
+				<li>Fight Club</li>
+				<li>Heat</li>
+			</ul>	
+		</div>
+	</div>
+	<div class="slide">
+		<div class="slide-title">
+			Musique
+		</div>
+		<div class="slide-content">
+			<ol>
+				<li>Edith Piaf</li>
+				<li>Dalida</li>
+				<li>Miles Davis</li>
+			</ol>
+		</div>
+	</div>
+</div>
+
+
+<div id="themes">
+	<style class="theme" id="another-theme" type="text/css">
+		#slide{
+			background-color: black;
+			color: white;
+			padding: 10px;
+			text-align: center;
+		}
+		.slide-title{
+			height: 10%;
+			vertical-align: middle;
+			font-size: x-large;
+			font-weight: bolder;
+			margin-bottom: 10px; 
+		}
+		.slide-content{
+			height: 80%;
+			vertical-align: middle;
+			font-weight: bolder;
+			font-size: xx-large;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+		.slide-footer{
+			height: 10%;
+			font-size: smaller;
+		}
+	</style>
+	<style class="theme" id="default-theme" type="text/css">
+		#slide{
+			padding: 10px;
+			text-align: center;
+		}
+		.slide-title{
+			height: 10%;
+			vertical-align: middle;
+			font-size: x-large;
+			font-weight: bolder;
+			margin-bottom: 10px; 
+		}
+		.slide-content{
+			height: 80%;
+			vertical-align: middle;
+			font-weight: bolder;
+			font-size: xx-large;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+		.slide-footer{
+			height: 10%;
+			font-size: smaller;
+		}
+	</style>
+</div>
+<!-- ^^^ YOUR EDITS GO INTO THE SECTION ABOVE ^^^ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <head>
 	<style id="slide-basic-style" type="text/css">
 		#pbody{
@@ -104,7 +235,7 @@
 
 
 <body>
-<!-- vvv YOUR EDITS GO INTO THE SECTION BELOW vvv -->
+
 	<script id="configuration" type="text/javascript">
 		var conf = {
 			slides_default_theme: "another-theme",
@@ -117,88 +248,10 @@
 
 
 
-	<div id="slides">
-		<div class="slide">
-			<div class="slide-title">
-				Un
-			</div>
-			<div class="slide-content">
-				First slide!!!!
-			</div>
-		</div>
-		<div class="slide">
-			<div class="slide-title">
-				Deux
-			</div>
-			<div class="slide-content">
-				Second slide!!!!
-			</div>
-		</div>
-		<div class="slide">
-			<div class="slide-title">
-				Troi
-			</div>
-			<div class="slide-content">
-				Third slide!!!!
-			</div>
-		</div>
-	</div>
+	
 
-	<div id="themes">
-		<style class="theme" id="another-theme" type="text/css">
-			#slide{
-				background-color: black;
-				color: white;
-				padding: 10px;
-				text-align: center;
-			}
-			.slide-title{
-				height: 10%;
-				vertical-align: middle;
-				font-size: x-large;
-				font-weight: bolder;
-				margin-bottom: 10px; 
-			}
-			.slide-content{
-				height: 80%;
-				vertical-align: middle;
-				font-weight: bolder;
-				font-size: xx-large;
-				margin-top: 10px;
-				margin-bottom: 10px;
-			}
-			.slide-footer{
-				height: 10%;
-				font-size: smaller;
-			}
-		</style>
-		<style class="theme" id="default-theme" type="text/css">
-			#slide{
-				padding: 10px;
-				text-align: center;
-			}
-			.slide-title{
-				height: 10%;
-				vertical-align: middle;
-				font-size: x-large;
-				font-weight: bolder;
-				margin-bottom: 10px; 
-			}
-			.slide-content{
-				height: 80%;
-				vertical-align: middle;
-				font-weight: bolder;
-				font-size: xx-large;
-				margin-top: 10px;
-				margin-bottom: 10px;
-			}
-			.slide-footer{
-				height: 10%;
-				font-size: smaller;
-			}
-		</style>
-	</div>
-<!-- ^^^ YOUR EDITS GO INTO THE SECTION ABOVE ^^^ -->
+
+
 
 
 
@@ -211,6 +264,7 @@
 				<button id="con-toggle-present" title="start/stop presentation" onclick="cc.toggle_presentation()"> &#9655 </button>
 				<button id="con-next-slide" title="next slide" onclick="cc.next_slide()"> &#8680 </button>
 				<button id="con-toggle-timers" title="pause/resume timers" onclick="cc.toggle_timers()"> &#10074&#10074 </button>
+				<input id="con-goto-slide-i" type="text"><button id="con-goto-slide-b" onclick="cc.goto_slide()"> Go </button>
 			</div>
 			<div id="slides-theme">
 				<span class="label">Slides Theme</span>
@@ -255,6 +309,7 @@
 			<tr><td class="label">left arrow or p</td><td>previous slide</td></tr>
 			<tr><td class="label">right arrow or n</td><td>next slide</td></tr>
 			<tr><td class="label">s</td><td>start/stop presentation</td></tr>
+			<tr><td class="label">g</td><td>go to slide #</td></tr>
 		</table>
 	</div>
 <!-- ^^^ SECTION ABOVE AFFECTS THE PAGE APPEARANCE DON'T EDIT ^^^ -->
@@ -305,6 +360,17 @@
 
 	Presentation.prototype.cur_slide = function(){
 		return this._s[this._curslide].innerHTML;
+	}
+
+	Presentation.prototype.get_slide = function(i){
+		
+		return (i>=0 && i<this._s.length)? this._s[i].innerHTML : null;
+	}
+
+	Presentation.prototype.goto_slide = function(i){
+		
+		if (i>=0 && i<this._s.length)
+			this._curslide = i;
 	}
 
 	Presentation.prototype.cur_slide_notes = function(){
@@ -584,6 +650,12 @@
 		
 	}
 
+	CommandCenter.prototype.goto_slide = function(){
+		var sn = document.getElementById("con-goto-slide-i").value;
+		this._p.goto_slide(sn-1);
+		this._display_presentation();
+	}
+
 	CommandCenter.prototype.prev_slide = function(){
 		this._p.prev_slide();
 		this._p.cur_slide_notes();
@@ -652,6 +724,15 @@
 			cc.toggle_presentation();
 			document.getElementById("con-toggle-present").focus();
 		}
+
+		// go to slide if g
+		if (e.keyCode == 71){
+			document.getElementById("con-goto-slide-i").focus();
+		}
+
+		// if enter while focus is on the goto control
+		if (e.keyCode == 13 && document.getElementById("con-goto-slide-i")==document.activeElement)
+			cc.goto_slide();
 
 	}
 
