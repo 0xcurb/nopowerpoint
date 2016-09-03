@@ -132,6 +132,136 @@
 
 
 <head>
+	<script id="config" type="text/javascript">
+		var SLIDES_ADD_FOOTER = true;
+		var SLIDES_FOOTER_CLASS = 'slide-footer';
+		var SLIDES_THEME_CLASS = 'theme';
+		var SLIDES_BASIC_STYLE_ID = 'slide-basic-style';
+		var SLIDES_DEFAULT_THEME_ID = 'default-theme';
+	</script>
+	<script id="slider-viewer" type="text/javascript">
+		// presentational layer
+		function _PSlideViewer(){
+			this._w = null;  // the window at which slides will be shown
+			this._s = null;  // the element into which the slide is displayed
+			this._ss = null; // the element into which the theme of the slides is put
+
+			this._styles = {}; // to store slides styles html using style id as the key
+			this._find_styles();
+		}
+
+		_PSlideViewer.prototype._find_styles = function(){
+			var t = document.getElementsByClassName(SLIDES_THEME_CLASS);
+			for(var i=0; i<t.length; i++){
+				this._styles[t[i].id] = t[i].innerHTML;
+			}
+
+			this._styles[SLIDES_BASIC_STYLE_ID] = document.getElementById(SLIDES_BASIC_STYLE_ID).innerHTML;
+		}
+
+		_PSlideViewer.prototype.load_style = function (style, into_element=null, html=false){
+			/*
+				style (string): style id or html
+				into_element (html element)(default null): if given the style will be loaded inside that element, else it will be loaded inside the slides style element stored internally
+				html (boolean)(default false): if true the function will treat style as html if not it will treat it as style element id
+			*/
+			if (!into_element) into_element = this._ss;
+
+			if (html) into_element.innerHTML = style;
+			else into_element.innerHTML = this._styles[style];
+		}
+
+		_PSlideViewer.prototype.create_window = function (slides_theme=null, theme_html=false, basic_style=null, basic_html=false){
+			this._w = window.open("", "", "menubar=no");
+
+			var bs = document.createElement("style");
+			bs.id = "basic-slides-style";
+			this._w.document.getElementsByTagName("head")[0].appendChild(bs);
+
+
+			this._ss = document.createElement("style");
+			this._ss.id = "slides-theme";
+			this._w.document.getElementsByTagName("head")[0].appendChild(this._ss);
+
+			var basics = basic_style? basic_style : SLIDES_BASIC_STYLE_ID;
+			var bhtml = basic_style? basic_html : false; 
+			var st = slides_theme? slides_theme : SLIDES_DEFAULT_THEME_ID;
+			var shtml = slides_theme? theme_html : false;
+
+			this.load_style(basics, bs, bhtml);
+			this.load_style(st, null, shtml);
+			
+
+
+			this._s = document.createElement("div");
+			this._s.id = "slide";
+			this._w.document.getElementsByTagName("body")[0].appendChild(this._s);
+		}
+
+		_PSlideViewer.prototype.display = function (slide_html){
+			this._s.innerHTML = slide_html;
+		}
+
+		
+		function SlideViewer(slides_element){
+			this._slides = [];
+			var s = slides_element.getElementsByClassName('slide');
+			for (var i=0; i<s.length; i++){
+				var html = s[i].innerHTML;
+				if (SLIDES_ADD_FOOTER){
+					html += '<div class="'+SLIDES_FOOTER_CLASS+'">[ '+(i+1)+'/'+s.length+' ]</div>';
+				}
+				this._slides.push(html);
+			}
+
+			this._p = new _PSlideViewer();
+
+			this._cs = -1;
+		}
+
+		SlideViewer.prototype.start_presentation = function(slides_theme=null, theme_html=false, basic_style=null, basic_html=false){
+			this._p.create_window(slides_theme, theme_html, basic_style, basic_html);
+			this.next_slide();
+		}
+
+		SlideViewer.prototype.goto_slide = function (i){ 
+			/* i is the natural index */ 
+			if (i >= 1 && i <= this.nslides()){
+				this._cs = i-i;  // store zero based index
+				this._p.display(this._slides[this._cs]); 
+			}
+			else return -1;
+		}
+		SlideViewer.prototype.next_slide = function(){
+			if (this._cs<this.nslides()-1){
+				this._cs++;
+				this._p.display(this._slides[this._cs])
+			}
+			else return -1;
+		}
+		SlideViewer.prototype.previous_slide = function(){
+			if (this._cs>0){
+				this._cs--;
+				this._p.display(this._slides[this._cs])
+			}
+			else return -1;
+		}
+		SlideViewer.prototype.nslides = function(){
+			return this._slides.length;
+		}
+		SlideViewer.prototype.current_slide = function(){ return this._cs; }
+
+		SlideViewer.prototype.change_theme = function(theme, html=false){ this._p.load_style(theme, html); }
+	</script>
+	<script id="monitors" type="text/javascript">
+	</script>
+	<script id="command-and-control" type="text/javascript">
+	</script>
+	<script id="event-listeners" type="text/javascript">
+	</script>
+	<script id="helper-fn" type="text/javascript">
+	</script>
+
 	<style id="slide-basic-style" type="text/css">
 		#pbody{
 			margin: 0px;
@@ -236,17 +366,6 @@
 
 <body>
 
-	<script id="configuration" type="text/javascript">
-		var conf = {
-			slides_default_theme: "another-theme",
-			slides_add_footer: true,
-			slide_title_class: "slide-title",//-
-			slide_content_class: "slide-content",//-
-			slide_footer_class: "slide-footer",
-		}
-	</script>
-
-
 
 	
 
@@ -316,428 +435,5 @@
 </body>
 
 
-<script id="global-variables" type="text/javascript">
-	var cc = null;
-</script>
 
-
-
-<script id="presentation-class" type="text/javascript">
-	function Presentation(){
-		this._curslide = 0;
-		this._s = document.getElementsByClassName('slide');
-		if (conf["slides_add_footer"]){
-			for (var i=0; i<this._s.length; i++){
-				var f = document.createElement("div");
-				f.className = conf["slide_footer_class"];
-				// add footer [ i/n ]
-				f.innerHTML = "[ "+(i+1)+"/"+this._s.length+" ]";
-				this._s[i].appendChild(f);
-			}
-		}
-	}
-	Presentation.prototype.nslides = function(){
-		return this._s.length;
-	}
-	Presentation.prototype.slideindex = function(){
-		return this._curslide+1;
-	}
-	Presentation.prototype.next_slide = function(){
-		this._curslide++;
-
-		if (this._curslide==this._s.length){
-			this._curslide--;
-		}
-	}
-
-	Presentation.prototype.prev_slide = function(){
-		this._curslide--;
-
-		if (this._curslide==-1){
-			this._curslide++;
-		}
-	}
-
-	Presentation.prototype.cur_slide = function(){
-		return this._s[this._curslide].innerHTML;
-	}
-
-	Presentation.prototype.get_slide = function(i){
-		
-		return (i>=0 && i<this._s.length)? this._s[i].innerHTML : null;
-	}
-
-	Presentation.prototype.goto_slide = function(i){
-		
-		if (i>=0 && i<this._s.length)
-			this._curslide = i;
-	}
-
-	Presentation.prototype.cur_slide_notes = function(){
-		var r = this._s[this._curslide].getElementsByClassName("slide-notes");
-		return r.length? r[0].innerHTML : '';
-	}
-</script>
-
-<script id="timer" type="text/javascript">
-	function Timer(hours_element, minutes_element, seconds_element=null, start_fn=null, stop_fn=null){
-		this._h = 0;
-		this._m = 0;
-		this._s = 0;
-
-		this._startfn = start_fn;
-		this._stopfn = stop_fn;
-
-		this._t = null;
-		this._he = hours_element;
-		this._me = minutes_element;
-		this._se = seconds_element;
-		if (seconds_element){
-			//set resolution to 1 second
-			this._res = 1000;
-		}
-		else{
-			//set resolution to 1 minute
-			this._res = 1000;
-		}
-
-		if (this._stopfn) //timer is stopped
-			this._stopfn();
-
-		this.update_view();
-	}
-
-	Timer.prototype.update_view = function(){
-		if (this._h < 10)
-			var pre = "0";
-		else
-			var pre = "";
-		this._he.innerHTML = pre+this._h;
-
-		if (this._m < 10)
-			pre = "0";
-		else
-			pre = "";
-
-		this._me.innerHTML = pre+this._m;
-
-		if (this._se){
-			if (this._s < 10)
-				pre = "0";
-			else
-				pre = "";
-
-			this._se.innerHTML = pre+this._s;
-		}
-
-	}
-
-	Timer.prototype.update = function(){
-		if (this._se){
-			if (this._s == 59){
-				this._m++;
-				this._s = 0;
-				if (this._m==60){
-					this._m=0;
-					this._h++;
-				}
-			}
-			else
-				this._s++;
-		}
-		else{
-			if (this._m == 59){
-				this._h++;
-				this._m = 0;
-			}
-			else
-				this._m++;
-		}
-
-		this.update_view();
-
-	}
-
-	Timer.prototype.start = function(start_fn=null){
-		if (!this._t)
-			var moi = this;
-			this._t = window.setInterval(function(){moi.update();}, this._res);
-			
-			if (start_fn)
-				start_fn();
-
-			else if (this._startfn)
-				this._startfn();
-
-			this.update_view();
-	}
-
-	Timer.prototype.stop = function(stop_fn){
-		if (this._t){
-			window.clearInterval(this._t);
-			this._t = null;
-			if (stop_fn)
-				stop_fn();
-			else if (this._stopfn)
-				this._stopfn();
-			this.update_view();
-		}
-	}
-
-	Timer.prototype.hours = function(){
-		return this._h;
-	}
-	Timer.prototype.minutes = function(){
-		return this._h;
-	}
-	Timer.prototype.seconds = function(){
-		return this._s;
-	}
-
-	Timer.prototype.reset = function(){
-		this._h = 0;
-		this._m = 0;
-		this._s = 0;
-
-		this.update_view();
-	}
-
-	Timer.prototype.isticking = function(){
-		return (this._t != null);
-	}
-</script>
-
-<script id="command-center" type="text/javascript">
-	function CommandCenter(){
-		//monitors
-		
-		this._ttime = this._create_timer("total-time"); // presentation total time
-		this._stime = this._create_timer("current-slide-time"); // current slide time
-		this._cslide = ""; // current slide number
-		this._tslides = ""; //total slides
-		this._rslides = ""; //remaining slides
-
-		document.getElementById("con-next-slide").disabled = true;
-		document.getElementById("con-prev-slide").disabled = true;
-		document.getElementById("con-toggle-timers").disabled = true;
-	}
-
-	CommandCenter.prototype._load_pstyle = function(style_id, into=null){
-		
-		if (!into){
-			var into = document.createElement("style");
-			this._w.document.getElementsByTagName("head")[0].appendChild(into);
-		}
-
-		into.innerHTML = document.getElementById(style_id).innerHTML;
-	}
-
-
-	CommandCenter.prototype._start_window = function(){
-		this._w = window.open("", "", "menubar=no");
-		var moi = this;
-		this._w.addEventListener("beforeunload", function(){moi.toggle_presentation();});
-		this._load_pstyle("slide-basic-style");
-		this._ss = document.createElement("style");
-		this._w.document.getElementsByTagName("head")[0].appendChild(this._ss);
-		this.change_theme();
-
-		this._s = document.createElement("div");
-		this._s.id = "slide";
-	
-
-		var b = this._w.document.getElementsByTagName("body")[0];
-		b.id = "pbody";
-		b.appendChild(this._s);
-	
-	}
-
-
-	CommandCenter.prototype._display_presentation = function(){
-		this._s.innerHTML = this._p.cur_slide();
-		this._stime.reset();
-		this._display_notes();
-
-		document.getElementById("current-slide-index").getElementsByClassName("counter")[0].innerHTML = this._p.slideindex();
-		
-	}
-
-	CommandCenter.prototype._display_notes = function(){
-		document.getElementById("presenter-notes").innerHTML = this._p.cur_slide_notes();
-		document.getElementById("slides-to-go").getElementsByClassName("counter")[0].innerHTML = this._p.nslides()-this._p.slideindex();
-	}
-
-	CommandCenter.prototype.toggle_timers = function(){
-		if (this._ttime.isticking()){
-			this._ttime.stop();
-			this._stime.stop();
-		}
-		else{
-			this._ttime.start();
-			this._stime.start();
-		}
-
-	}
-
-	CommandCenter.prototype.toggle_presentation = function(){
-		if (this._p){
-			//stop
-			this._stop_presentation();
-			// change button
-			document.getElementById("con-toggle-present").innerHTML = "&#9655";
-			document.getElementById("con-next-slide").disabled = true;
-			document.getElementById("con-prev-slide").disabled = true;
-			document.getElementById("con-toggle-timers").disabled = true;
-			this._ttime.stop();
-			this._stime.stop();
-			
-		}
-		else{
-			this._start_presentation();
-			document.getElementById("con-toggle-present").innerHTML = "&#9635";
-			document.getElementById("con-next-slide").disabled = false;
-			document.getElementById("con-prev-slide").disabled = false;
-			document.getElementById("con-toggle-timers").disabled = false;
-			this._ttime.start();
-			this._stime.start();
-		}
-		
-	}
-
-	CommandCenter.prototype._create_timer = function(timer_id, seconds=false, start_fn=null, stop_fn=null){
-		if (!start_fn)
-			start_fn = function(){
-				var e=document.getElementById(timer_id).getElementsByClassName("time")[0]; 
-				
-				if (e.className.match(/(?:^|\s)stopped(?!\S)/)) 
-					e.className = e.className.replace(/(?:^|\s)stopped(?!\S)/g, " ticking");
-				else if (!e.className.match(/(?:^|\s)ticking(?!\S)/)) 
-					e.className += " ticking";
-			}
-		if (!stop_fn)
-			stop_fn = function(){
-				var e=document.getElementById(timer_id).getElementsByClassName("time")[0]; 
-				if (e.className.match(/(?:^|\s)ticking(?!\S)/)) 
-					e.className = e.className.replace(/(?:^|\s)ticking(?!\S)/g, " stopped");
-				else if (!e.className.match(/(?:^|\s)stopped(?!\S)/)) 
-					e.className += " stopped";
-			}
-
-		var te = document.getElementById(timer_id);
-		var h = te.getElementsByClassName("time-hours")[0];
-		var m = te.getElementsByClassName("time-minutes")[0];
-		var s = seconds? te.getElementsByClassName("time-seconds")[0] : null;
-		var t = new Timer(h, m, s, start_fn, stop_fn);
-		return t;
-	}
-
-
-	CommandCenter.prototype._start_presentation = function(){
-		this._p = new Presentation();
-		this._start_window();
-		this._display_presentation();
-
-		document.getElementById("total-slides").getElementsByClassName("counter")[0].innerHTML = this._p.nslides();
-		document.getElementById("slides-to-go").getElementsByClassName("counter")[0].innerHTML = this._p.nslides()-this._p.slideindex();
-		
-	}
-
-	CommandCenter.prototype.next_slide = function(){
-		this._p.next_slide()
-		this._p.cur_slide_notes();
-		this._display_presentation();
-
-		
-	}
-
-	CommandCenter.prototype.goto_slide = function(){
-		var sn = document.getElementById("con-goto-slide-i").value;
-		this._p.goto_slide(sn-1);
-		this._display_presentation();
-	}
-
-	CommandCenter.prototype.prev_slide = function(){
-		this._p.prev_slide();
-		this._p.cur_slide_notes();
-		this._display_presentation();
-	}
-
-	CommandCenter.prototype.change_theme = function(){
-		var ns = document.getElementById("themepicker").value;
-		this._load_pstyle(ns, this._ss);
-	}
-
-
-
-	CommandCenter.prototype._stop_presentation = function(){
-		this._w.close();
-		this._w = null;
-		this._p = null;
-		this._s = null;
-		this._ss = null;
-
-		document.getElementById("total-slides").getElementsByClassName("counter")[0].innerHTML = "";
-		document.getElementById("current-slide-index").getElementsByClassName("counter")[0].innerHTML = "";
-		document.getElementById("slides-to-go").getElementsByClassName("counter")[0].innerHTML = "";
-
-	}
-</script>
-
-<script id="general-functions" type="text/javascript">
-	function populate_themepicker(){
-		var all_themes = document.getElementsByClassName("theme");
-		var tp = document.getElementById("themepicker");
-
-		for (var i=0; i<all_themes.length; i++){
-			var o = document.createElement("option");
-			o.value = all_themes[i].id;
-			o.innerHTML = all_themes[i].id;
-			if (o.value == conf["slides_default_theme"])
-				o.selected = true;
-			tp.appendChild(o);
-		}
-	}
-
-	function startup(){
-		populate_themepicker();
-		cc = new CommandCenter();
-
-		//register shortcuts
-		document.addEventListener("keyup", shortcut, false);
-	}
-
-	function shortcut(e){
-		// next slide if right arrow or 'n'
-		if (e.keyCode == 39 || e.keyCode == 78){
-			cc.next_slide();
-			document.getElementById("con-next-slide").focus();
-		}
-
-		// prev slide if left arrow or 'p'
-		if (e.keyCode == 37 || e.keyCode == 80){
-			cc.prev_slide();
-			document.getElementById("con-prev-slide").focus();
-		}
-
-		// start/stop presentation if s
-		if (e.keyCode == 83){
-			cc.toggle_presentation();
-			document.getElementById("con-toggle-present").focus();
-		}
-
-		// go to slide if g
-		if (e.keyCode == 71){
-			document.getElementById("con-goto-slide-i").focus();
-		}
-
-		// if enter while focus is on the goto control
-		if (e.keyCode == 13 && document.getElementById("con-goto-slide-i")==document.activeElement)
-			cc.goto_slide();
-
-	}
-
-	// CALLING STARTUP FUNCTION //
-	startup();
-	// //
-</script>
 </html>
